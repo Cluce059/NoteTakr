@@ -25,9 +25,9 @@
   😇 PR's welcome
   ## Tests
   ❗  add a note and check db.json to ensure that it is saved 
-  
+
   ## Screenshot
-  ![websiteScreenshot](./public/assets/img/Screenshot(6).png)
+  ![websiteScreenshot](./public/assets/img/screenshot.png)
 
   ## Questions
   👽 email me!<br />

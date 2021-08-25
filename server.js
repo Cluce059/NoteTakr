@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+//for unique id 
 var uniqid = require('uniqid'); 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -27,16 +28,17 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
-//catch all must go last(wildcard, right?)
+//catch all must go last(wildcard)
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
-
+//after getting everything, post new note to api
 app.post('/api/notes', (req, res) => {
     const newNote = createNewNote(req.body, notes);
     res.json(newNote);
   });
 
+  //function to create new note
 function createNewNote(body, notesArray) {
     //sets new notes a body of req from api post method
     const newNote = body;
@@ -59,22 +61,25 @@ function createNewNote(body, notesArray) {
 }
 
 function deleteNote(id, notesArray) {
-    for (let i = 0; i < notesArray.length; i++) {
+    for (let i = 0; i < notesArray.length; i++)
+        //index tracker variable
         let noteI = notesArray[i];
-
+        //if selected note if found by id
         if (noteI.id == id) {
+            //put a 1 as a placeholder
             notesArray.splice(i, 1);
+            //update file
             fs.writeFileSync(
                 path.join(__dirname, './db/db.json'),
                 JSON.stringify(notesArray, null, 2)
             );
-              //
+              //leave
             break;
-        }
-    }
+     }
 }
 
 app.delete('/api/notes/:id', (req, res) => {
+    //get id from body requested from notes[] to delete
     deleteNote(req.params.id, notes);
     res.json(true);
 });
