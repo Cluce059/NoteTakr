@@ -4,17 +4,20 @@ const path = require('path');
 const express = require('express');
 //for unique id 
 var uniqid = require('uniqid'); 
+//use port in case 3000 isnt available
 const PORT = process.env.PORT || 3001;
 const app = express();
 const notes = require('./db/db.json');
 
+//actions
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
 //api route
 //===================================================
-app.get('/api/notes', (req, res) => {
+app.get('/api/notes', //middleware: 
+(req, res) => {
     res.json(notes.slice(1));
 });
 
@@ -61,11 +64,11 @@ function createNewNote(body, notesArray) {
 }
 
 function deleteNote(id, notesArray) {
-    for (let i = 0; i < notesArray.length; i++)
+    for (let i = 0; i < notesArray.length; i++){
         //index tracker variable
         let noteI = notesArray[i];
         //if selected note if found by id
-        if (noteI.id == id) {
+        if (noteI.id === id) {
             //put a 1 as a placeholder
             notesArray.splice(i, 1);
             //update file
@@ -73,18 +76,21 @@ function deleteNote(id, notesArray) {
                 path.join(__dirname, './db/db.json'),
                 JSON.stringify(notesArray, null, 2)
             );
-              //leave
+        }
+              //leave loop
             break;
+            //return;
      }
 }
 
+//designate route using id param
 app.delete('/api/notes/:id', (req, res) => {
     //get id from body requested from notes[] to delete
     deleteNote(req.params.id, notes);
     res.json(true);
 });
 
-//listener goes last
+//listener goes last w dynamic value for port
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
 });
