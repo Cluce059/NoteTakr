@@ -1,7 +1,8 @@
+//Application back end must store notes with unique IDs in a JSON file.
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
-
+var uniqid = require('uniqid'); 
 const PORT = process.env.PORT || 3001;
 const app = express();
 const notes = require('./db/db.json');
@@ -14,11 +15,6 @@ app.use(express.static('public'));
 //===================================================
 app.get('/api/notes', (req, res) => {
     res.json(notes.slice(1));
-});
-//this may have to move?
-app.post('/api/notes', (req, res) => {
-  const newNote = createNewNote(req.body, notes);
-  res.json(newNote);
 });
 
 //data routes
@@ -36,17 +32,24 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
+app.post('/api/notes', (req, res) => {
+    const newNote = createNewNote(req.body, notes);
+    res.json(newNote);
+  });
+
 function createNewNote(body, notesArray) {
+    //sets new notes a body of req from api post method
     const newNote = body;
-    if (!Array.isArray(notesArray))
+    if (!Array.isArray(notesArray)){
         notesArray = [];
-    
-    if (notesArray.length === 0)
+    }
+    if (notesArray.length === 0){
         notesArray.push(0);
-
-    body.id = notesArray[0];
+    }
+    //set id of new body obj to uniqid
+    //body.id = notesArray[0];
+    body.id = uniqid();
     notesArray[0]++;
-
     notesArray.push(newNote);
     fs.writeFileSync(
         path.join(__dirname, './db/db.json'),
