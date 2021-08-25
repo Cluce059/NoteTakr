@@ -41,6 +41,13 @@ app.post('/api/notes', (req, res) => {
     res.json(newNote);
   });
 
+//designate route using id param
+app.delete('/api/notes/:id', (req, res) => {
+    //get id from body requested from notes[] to delete
+    deleteNote(req.params.id, notes);
+    res.json(true);
+});
+
   //function to create new note
 function createNewNote(body, notesArray) {
     //sets new notes a body of req from api post method
@@ -76,19 +83,16 @@ function deleteNote(id, notesArray) {
                 path.join(__dirname, './db/db.json'),
                 JSON.stringify(notesArray, null, 2)
             );
-        }
+       
+    
               //leave loop
             break;
             //return;
-     }
+        }
+}
 }
 
-//designate route using id param
-app.delete('/api/notes/:id', (req, res) => {
-    //get id from body requested from notes[] to delete
-    deleteNote(req.params.id, notes);
-    res.json(true);
-});
+
 
 //listener goes last w dynamic value for port
 app.listen(PORT, () => {
